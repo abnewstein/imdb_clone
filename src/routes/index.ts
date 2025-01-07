@@ -1,1 +1,0 @@
-export { movieRoutes } from "./movies";
