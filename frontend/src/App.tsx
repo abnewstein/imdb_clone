@@ -1,19 +1,17 @@
-import { useState } from "react";
-import "./App.css";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MovieList from "./components/MovieList";
+import AddMovie from "./components/AddMovie";
 
-function App() {
-  const [count, setCount] = useState(0);
-
+const App: React.FC = () => {
   return (
-    <>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<MovieList />} />
+        <Route path="/add-movie" element={<AddMovie />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

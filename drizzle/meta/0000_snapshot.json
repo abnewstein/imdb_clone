@@ -1,5 +1,5 @@
 {
-  "id": "7ebfde6b-2cd2-4335-a5f1-e5aa5eb9286c",
+  "id": "40e736a1-2dd6-4e21-8fd9-21e0ea0b31b9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -19,6 +19,13 @@
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         },
         "gender": {
           "name": "gender",
@@ -68,6 +75,13 @@
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -128,6 +142,13 @@
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         },
         "year_of_release": {
           "name": "year_of_release",
@@ -191,6 +212,13 @@
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         },
         "gender": {
           "name": "gender",

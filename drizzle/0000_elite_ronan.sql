@@ -1,6 +1,7 @@
 CREATE TABLE "actors" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
+	"created_at" timestamp DEFAULT now(),
 	"gender" varchar(10) NOT NULL,
 	"date_of_birth" date NOT NULL,
 	"bio" text
@@ -10,12 +11,14 @@ CREATE TABLE "movie_actors" (
 	"movie_id" integer NOT NULL,
 	"actor_id" integer NOT NULL,
 	"role" varchar(255),
+	"created_at" timestamp DEFAULT now(),
 	CONSTRAINT "movie_actors_movie_id_actor_id_pk" PRIMARY KEY("movie_id","actor_id")
 );
 --> statement-breakpoint
 CREATE TABLE "movies" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
+	"created_at" timestamp DEFAULT now(),
 	"year_of_release" integer NOT NULL,
 	"plot" text,
 	"poster" text,
@@ -25,6 +28,7 @@ CREATE TABLE "movies" (
 CREATE TABLE "producers" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
+	"created_at" timestamp DEFAULT now(),
 	"gender" varchar(10) NOT NULL,
 	"date_of_birth" date NOT NULL,
 	"bio" text
