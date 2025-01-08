@@ -51,7 +51,6 @@ export const movieActors = pgTable(
     actorId: integer("actor_id")
       .references(() => actors.id)
       .notNull(),
-    role: varchar("role", { length: 255 }),
     createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => [primaryKey({ columns: [table.movieId, table.actorId] })]
@@ -63,11 +62,11 @@ export const moviesRelations = relations(movies, ({ one, many }) => ({
     fields: [movies.producerId],
     references: [producers.id],
   }),
-  actors: many(movieActors),
+  movieActors: many(movieActors),
 }));
 
 export const actorsRelations = relations(actors, ({ many }) => ({
-  movies: many(movieActors),
+  movieActors: many(movieActors),
 }));
 
 export const producersRelations = relations(producers, ({ many }) => ({
@@ -100,7 +99,10 @@ export const insertProducerSchema = createInsertSchema(producers, {
 });
 export const selectProducerSchema = createSelectSchema(producers);
 
-export const insertMovieSchema = createInsertSchema(movies);
+export const insertMovieSchema = createInsertSchema(movies, {
+  name: z.string().min(1).max(100),
+  yearOfRelease: z.number().positive().gte(1900).lt(2100),
+});
 export const selectMovieSchema = createSelectSchema(movies);
 
 export const insertMovieActorSchema = createInsertSchema(movieActors);

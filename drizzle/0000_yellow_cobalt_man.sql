@@ -10,7 +10,6 @@ CREATE TABLE "actors" (
 CREATE TABLE "movie_actors" (
 	"movie_id" integer NOT NULL,
 	"actor_id" integer NOT NULL,
-	"role" varchar(255),
 	"created_at" timestamp DEFAULT now(),
 	CONSTRAINT "movie_actors_movie_id_actor_id_pk" PRIMARY KEY("movie_id","actor_id")
 );

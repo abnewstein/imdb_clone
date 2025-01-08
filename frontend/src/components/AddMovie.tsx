@@ -1,17 +1,11 @@
-import React, { useEffect } from "react";
-import { observer } from "mobx-react-lite";
+import React, { useMemo } from "react";
 import { useForm } from "@tanstack/react-form";
-import { store } from "../store";
-
+import type { FieldApi } from "@tanstack/react-form";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "./ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -20,18 +14,46 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import SelectActors from "./SelectActor";
+import { fetchActorList, fetchProducerList } from "@/lib/fetchers";
 
-const AddMovie: React.FC = observer(() => {
-  useEffect(() => {
-    store.fetchActors();
-    store.fetchProducers();
-  }, []);
+//eslint-disable-next-line
+function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
+  return (
+    <>
+      {field.state.meta.isTouched && field.state.meta.errors.length ? (
+        <em>{field.state.meta.errors.join(",")}</em>
+      ) : null}
+    </>
+  );
+}
+
+const AddMovie: React.FC = () => {
+  const { data: actorList } = useQuery({
+    queryKey: ["actorList"],
+    queryFn: fetchActorList,
+  });
+  const { data: producerList } = useQuery({
+    queryKey: ["producerList"],
+    queryFn: fetchProducerList,
+  });
+  const actorsForSelect = useMemo(
+    () =>
+      actorList?.map((actor) => ({
+        value: actor.id.toString(),
+        label: actor.name,
+      })) ?? [],
+    [actorList]
+  );
 
   const form = useForm({
     defaultValues: {
       name: "",
       yearOfRelease: "",
+      plot: "",
+      poster: "",
       producer: "",
+      actors: [] as { name: string; id: string }[],
     },
     onSubmit: async ({ value }) => {
       console.log(value);
@@ -44,50 +66,185 @@ const AddMovie: React.FC = observer(() => {
         <CardTitle>Add a new Movie</CardTitle>
       </CardHeader>
       <CardContent>
-        <form>
+        <form
+          onSubmit={(e) => {
+            console.log("submitting");
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Name of your project" />
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="yearOfRelease">Year of release</Label>
-              <Input
-                id="yearOfRelease"
-                placeholder="Year of release of the movie"
+              <form.Field
+                name="name"
+                children={(field) => {
+                  return (
+                    <>
+                      <label htmlFor={field.name}>Name :</label>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                      />
+                      <FieldInfo field={field} />
+                    </>
+                  );
+                }}
               />
             </div>
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="plot">Plot</Label>
-              <Input id="plot" placeholder="Plot of the movie" />
+              <form.Field
+                name="yearOfRelease"
+                children={(field) => {
+                  return (
+                    <>
+                      <label htmlFor={field.name}>Year of release :</label>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                      />
+                      <FieldInfo field={field} />
+                    </>
+                  );
+                }}
+              />
             </div>
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="poster">Poster</Label>
-              <Input id="poster" placeholder="Poster of your project" />
+              <form.Field
+                name="plot"
+                children={(field) => {
+                  return (
+                    <>
+                      <label htmlFor={field.name}>Plot :</label>
+                      <Textarea
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                      />
+                      <FieldInfo field={field} />
+                    </>
+                  );
+                }}
+              />
             </div>
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="framework">Actors</Label>
-              <Select>
-                <SelectTrigger id="framework">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="next">Next.js</SelectItem>
-                  <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                  <SelectItem value="astro">Astro</SelectItem>
-                  <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                </SelectContent>
-              </Select>
+              <form.Field
+                name="poster"
+                children={(field) => {
+                  return (
+                    <>
+                      <label htmlFor={field.name}>Poster :</label>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                      />
+                      <FieldInfo field={field} />
+                    </>
+                  );
+                }}
+              />
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <form.Field name="actors" mode="array">
+                {(field) => {
+                  return (
+                    <div>
+                      {field.state.value.map((_, i) => {
+                        return (
+                          <form.Field key={i} name={`actors[${i}].name`}>
+                            {(subField) => {
+                              return (
+                                <div>
+                                  <SelectActors
+                                    actors={actorsForSelect}
+                                    value={subField.state.value as string}
+                                    onChange={subField.handleChange}
+                                  />
+                                </div>
+                              );
+                            }}
+                          </form.Field>
+                        );
+                      })}
+                      <button
+                        onClick={() => field.pushValue({ name: "", id: "" })}
+                        type="button"
+                      >
+                        Add actor
+                      </button>
+                    </div>
+                  );
+                }}
+              </form.Field>
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <form.Field
+                name="producer"
+                children={(field) => {
+                  return (
+                    <>
+                      <Label htmlFor={field.name}>Producer</Label>
+                      <Select
+                        onValueChange={field.handleChange}
+                        value={field.state.value}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select a producer" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {producerList?.map((producer) => (
+                            <SelectItem
+                              key={producer.id}
+                              value={producer.id.toString()}
+                            >
+                              {producer.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FieldInfo field={field} />
+                    </>
+                  );
+                }}
+              />
+            </div>
+            <div className="flex justify-between">
+              <form.Subscribe
+                selector={(state) => [state.canSubmit, state.isSubmitting]}
+                children={([canSubmit, isSubmitting]) => (
+                  <>
+                    <Button type="submit" disabled={!canSubmit}>
+                      {isSubmitting ? "..." : "Add Movie"}
+                    </Button>
+                    <Button
+                      type="reset"
+                      onClick={() => {
+                        form.reset();
+                      }}
+                      variant={"outline"}
+                    >
+                      Reset
+                    </Button>
+                  </>
+                )}
+              />
             </div>
           </div>
         </form>
       </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
-        <Button>Add Movie</Button>
-      </CardFooter>
     </Card>
   );
-});
+};
 
 export default AddMovie;

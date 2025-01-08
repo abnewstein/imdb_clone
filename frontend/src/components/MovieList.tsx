@@ -1,56 +1,61 @@
-// src/components/MovieList.tsx
 import React from "react";
-import { observer } from "mobx-react-lite";
+import { useQuery } from "@tanstack/react-query";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { fetchMovieList } from "@/lib/fetchers";
 
-const fakeMovieListData = [
-  {
-    id: 1,
-    name: "The Shawshank Redemption",
-    yearOfRelease: 1994,
-    producerId: 1,
-  },
-  { id: 2, name: "The Godfather", yearOfRelease: 1972, producerId: 2 },
-  { id: 3, name: "The Dark Knight", yearOfRelease: 2008, producerId: 3 },
-];
+const MovieList: React.FC = () => {
+  const {
+    data: movieList,
+    isPending,
+    error,
+  } = useQuery({
+    queryKey: ["movieList"],
+    queryFn: fetchMovieList,
+  });
 
-const MovieList: React.FC = observer(() => {
+  if (isPending) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <div className="max-w-2xl mx-auto p-4 flex flex-col items-center">
-      <h1>Movie List</h1>
-      <table className="max-w-[800px] m-auto divide-y divide-gray-200">
-        <thead>
-          <tr>
-            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              ID
-            </th>
-            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Name
-            </th>
-            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Year
-            </th>
-            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Producer ID
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {fakeMovieListData.map((movie) => (
-            <tr key={movie.id}>
-              <td className="px-6 py-4 whitespace-nowrap">{movie.id}</td>
-              <td className="px-6 py-4 whitespace-nowrap">{movie.name}</td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                {movie.yearOfRelease}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                {movie.producerId}
-              </td>
-            </tr>
+      <h1 className="text-3xl mb-4">Movie List</h1>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>ID</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Year</TableHead>
+            <TableHead>Producer</TableHead>
+            <TableHead>Actors</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {movieList?.map((movie) => (
+            <TableRow key={movie.id}>
+              <TableCell>{movie.id}</TableCell>
+              <TableCell>{movie.name}</TableCell>
+              <TableCell>{movie.yearOfRelease}</TableCell>
+              <TableCell>{movie.producer.name}</TableCell>
+              <TableCell>
+                {movie.actors.map((actor) => actor.name).join(", ")}
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
-});
+};
 
 export default MovieList;
