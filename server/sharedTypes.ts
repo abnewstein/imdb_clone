@@ -22,10 +22,14 @@ export const createProducerSchema = insertProducerSchema.omit({
 });
 
 export const movieSchema = selectMovieSchema.omit({ createdAt: true });
-export const createMovieSchema = insertMovieSchema.omit({
-  id: true,
-  createdAt: true,
-});
+export const createMovieSchema = insertMovieSchema
+  .omit({
+    id: true,
+    createdAt: true,
+  })
+  .extend({
+    actorIds: z.array(z.number().positive()),
+  });
 
 export const movieActorSchema = selectMovieActorSchema.omit({
   createdAt: true,
@@ -53,5 +57,6 @@ const movieType = z.object({
 });
 
 export type Movie = z.infer<typeof movieType>;
+export type CreateMovie = z.infer<typeof createMovieSchema>;
 export type Actor = z.infer<typeof actorSchema>;
 export type Producer = z.infer<typeof producerSchema>;

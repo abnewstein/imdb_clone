@@ -1,11 +1,12 @@
 import React, { useMemo } from "react";
 import { useForm } from "@tanstack/react-form";
 import type { FieldApi } from "@tanstack/react-form";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { SquareX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "./ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -14,8 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import SelectActors from "./SelectActor";
+import SelectActorPopover from "./SelectActorPopover";
 import { fetchActorList, fetchProducerList } from "@/lib/fetchers";
+import { api } from "@/lib/api";
+import { CreateMovie } from "@server/sharedTypes";
 
 //eslint-disable-next-line
 function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
@@ -45,6 +48,11 @@ const AddMovie: React.FC = () => {
       })) ?? [],
     [actorList]
   );
+  const mutation = useMutation({
+    mutationFn: (movie: CreateMovie) => {
+      return api.movies.$post({ json: movie });
+    },
+  });
 
   const form = useForm({
     defaultValues: {
@@ -52,16 +60,23 @@ const AddMovie: React.FC = () => {
       yearOfRelease: "",
       plot: "",
       poster: "",
-      producer: "",
-      actors: [] as { name: string; id: string }[],
+      producerId: "",
+      actorIds: [] as { id: string }[],
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
+      const formattedValue = {
+        ...value,
+        yearOfRelease: parseInt(value.yearOfRelease),
+        producerId: parseInt(value.producerId),
+        actorIds: value.actorIds.map((actor) => parseInt(actor.id)),
+      };
+      console.log(formattedValue);
+      mutation.mutate(formattedValue);
     },
   });
 
   return (
-    <Card className="w-[350px] m-auto">
+    <Card className="w-[450px] m-auto">
       <CardHeader>
         <CardTitle>Add a new Movie</CardTitle>
       </CardHeader>
@@ -81,7 +96,7 @@ const AddMovie: React.FC = () => {
                 children={(field) => {
                   return (
                     <>
-                      <label htmlFor={field.name}>Name :</label>
+                      <Label htmlFor={field.name}>Name :</Label>
                       <Input
                         id={field.name}
                         name={field.name}
@@ -101,7 +116,7 @@ const AddMovie: React.FC = () => {
                 children={(field) => {
                   return (
                     <>
-                      <label htmlFor={field.name}>Year of release :</label>
+                      <Label htmlFor={field.name}>Year of release :</Label>
                       <Input
                         id={field.name}
                         name={field.name}
@@ -121,7 +136,7 @@ const AddMovie: React.FC = () => {
                 children={(field) => {
                   return (
                     <>
-                      <label htmlFor={field.name}>Plot :</label>
+                      <Label htmlFor={field.name}>Plot :</Label>
                       <Textarea
                         id={field.name}
                         name={field.name}
@@ -141,7 +156,7 @@ const AddMovie: React.FC = () => {
                 children={(field) => {
                   return (
                     <>
-                      <label htmlFor={field.name}>Poster :</label>
+                      <Label htmlFor={field.name}>Poster :</Label>
                       <Input
                         id={field.name}
                         name={field.name}
@@ -156,33 +171,56 @@ const AddMovie: React.FC = () => {
               />
             </div>
             <div className="flex flex-col space-y-1.5">
-              <form.Field name="actors" mode="array">
+              <form.Field name="actorIds" mode="array">
                 {(field) => {
                   return (
-                    <div>
+                    <div className="flex flex-col space-y-1.5 gap-2">
+                      <Label htmlFor={field.name}>Actors :</Label>
                       {field.state.value.map((_, i) => {
                         return (
-                          <form.Field key={i} name={`actors[${i}].name`}>
+                          <form.Field key={i} name={`actorIds[${i}].id`}>
                             {(subField) => {
                               return (
-                                <div>
-                                  <SelectActors
-                                    actors={actorsForSelect}
-                                    value={subField.state.value as string}
-                                    onChange={subField.handleChange}
-                                  />
-                                </div>
+                                <>
+                                  <div className="flex justify-between gap-2">
+                                    <SelectActorPopover
+                                      actors={actorsForSelect.filter(
+                                        (actor) =>
+                                          !field.state.value.some(
+                                            (actorId) =>
+                                              actorId.id === actor.value &&
+                                              actorId.id !==
+                                                subField.state.value
+                                          )
+                                      )}
+                                      value={subField.state.value as string}
+                                      onChange={subField.handleChange}
+                                    />
+                                    <Button
+                                      onClick={() => field.removeValue(i)}
+                                      type="button"
+                                      variant="destructive"
+                                    >
+                                      <SquareX className="h-6 w-6" />
+                                    </Button>
+                                  </div>
+                                  <FieldInfo field={subField} />
+                                </>
                               );
                             }}
                           </form.Field>
                         );
                       })}
-                      <button
-                        onClick={() => field.pushValue({ name: "", id: "" })}
+                      <Button
+                        onClick={() => field.pushValue({ id: "" })}
+                        disabled={
+                          field.state.value.length >= actorsForSelect.length
+                        }
                         type="button"
+                        variant="outline"
                       >
                         Add actor
-                      </button>
+                      </Button>
                     </div>
                   );
                 }}
@@ -190,7 +228,7 @@ const AddMovie: React.FC = () => {
             </div>
             <div className="flex flex-col space-y-1.5">
               <form.Field
-                name="producer"
+                name="producerId"
                 children={(field) => {
                   return (
                     <>
@@ -219,7 +257,7 @@ const AddMovie: React.FC = () => {
                 }}
               />
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between my-4">
               <form.Subscribe
                 selector={(state) => [state.canSubmit, state.isSubmitting]}
                 children={([canSubmit, isSubmitting]) => (
