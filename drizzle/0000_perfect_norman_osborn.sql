@@ -1,10 +1,11 @@
 CREATE TABLE "actors" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar(255) NOT NULL,
 	"created_at" timestamp DEFAULT now(),
+	"name" varchar(255) NOT NULL,
 	"gender" varchar(10) NOT NULL,
 	"date_of_birth" date NOT NULL,
-	"bio" text
+	"bio" text,
+	CONSTRAINT "actors_name_gender_date_of_birth_unique" UNIQUE("name","gender","date_of_birth")
 );
 --> statement-breakpoint
 CREATE TABLE "movie_actors" (
@@ -16,21 +17,23 @@ CREATE TABLE "movie_actors" (
 --> statement-breakpoint
 CREATE TABLE "movies" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar(255) NOT NULL,
 	"created_at" timestamp DEFAULT now(),
+	"name" varchar(255) NOT NULL,
 	"year_of_release" integer NOT NULL,
 	"plot" text,
 	"poster" text,
-	"producer_id" integer NOT NULL
+	"producer_id" integer NOT NULL,
+	CONSTRAINT "movies_name_year_of_release_producer_id_unique" UNIQUE("name","year_of_release","producer_id")
 );
 --> statement-breakpoint
 CREATE TABLE "producers" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar(255) NOT NULL,
 	"created_at" timestamp DEFAULT now(),
+	"name" varchar(255) NOT NULL,
 	"gender" varchar(10) NOT NULL,
 	"date_of_birth" date NOT NULL,
-	"bio" text
+	"bio" text,
+	CONSTRAINT "producers_name_gender_date_of_birth_unique" UNIQUE("name","gender","date_of_birth")
 );
 --> statement-breakpoint
 ALTER TABLE "movie_actors" ADD CONSTRAINT "movie_actors_movie_id_movies_id_fk" FOREIGN KEY ("movie_id") REFERENCES "public"."movies"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

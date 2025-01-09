@@ -18,14 +18,15 @@ import {
 import SelectActorPopover from "./SelectActorPopover";
 import { fetchActorList, fetchProducerList } from "@/lib/fetchers";
 import { api } from "@/lib/api";
-import { CreateMovie } from "@server/sharedTypes";
+import { type CreateMovie } from "@server/sharedTypes";
+import { type AddMoviePayload, addMovieSchema } from "@/lib/types";
 
 //eslint-disable-next-line
 function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
   return (
     <>
       {field.state.meta.isTouched && field.state.meta.errors.length ? (
-        <em>{field.state.meta.errors.join(",")}</em>
+        <em className="text-red-600">{field.state.meta.errors.join(",")}</em>
       ) : null}
     </>
   );
@@ -40,7 +41,7 @@ const AddMovie: React.FC = () => {
     queryKey: ["producerList"],
     queryFn: fetchProducerList,
   });
-  const actorsForSelect = useMemo(
+  const actorsListForSelect = useMemo(
     () =>
       actorList?.map((actor) => ({
         value: actor.id.toString(),
@@ -49,8 +50,13 @@ const AddMovie: React.FC = () => {
     [actorList]
   );
   const mutation = useMutation({
-    mutationFn: (movie: CreateMovie) => {
-      return api.movies.$post({ json: movie });
+    mutationFn: async (movie: CreateMovie) => {
+      const res = await api.movies.$post({ json: movie });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+      return data;
     },
   });
 
@@ -62,7 +68,7 @@ const AddMovie: React.FC = () => {
       poster: "",
       producerId: "",
       actorIds: [] as { id: string }[],
-    },
+    } as AddMoviePayload,
     onSubmit: async ({ value }) => {
       const formattedValue = {
         ...value,
@@ -70,8 +76,10 @@ const AddMovie: React.FC = () => {
         producerId: parseInt(value.producerId),
         actorIds: value.actorIds.map((actor) => parseInt(actor.id)),
       };
-      console.log(formattedValue);
       mutation.mutate(formattedValue);
+    },
+    validators: {
+      onChange: addMovieSchema,
     },
   });
 
@@ -184,7 +192,7 @@ const AddMovie: React.FC = () => {
                                 <>
                                   <div className="flex justify-between gap-2">
                                     <SelectActorPopover
-                                      actors={actorsForSelect.filter(
+                                      actors={actorsListForSelect.filter(
                                         (actor) =>
                                           !field.state.value.some(
                                             (actorId) =>
@@ -200,8 +208,9 @@ const AddMovie: React.FC = () => {
                                       onClick={() => field.removeValue(i)}
                                       type="button"
                                       variant="destructive"
+                                      size="icon"
                                     >
-                                      <SquareX className="h-6 w-6" />
+                                      <SquareX />
                                     </Button>
                                   </div>
                                   <FieldInfo field={subField} />
@@ -211,13 +220,14 @@ const AddMovie: React.FC = () => {
                           </form.Field>
                         );
                       })}
+                      <FieldInfo field={field} />
                       <Button
                         onClick={() => field.pushValue({ id: "" })}
                         disabled={
-                          field.state.value.length >= actorsForSelect.length
+                          field.state.value.length >= actorsListForSelect.length
                         }
                         type="button"
-                        variant="outline"
+                        variant="secondary"
                       >
                         Add actor
                       </Button>
@@ -263,7 +273,7 @@ const AddMovie: React.FC = () => {
                 children={([canSubmit, isSubmitting]) => (
                   <>
                     <Button type="submit" disabled={!canSubmit}>
-                      {isSubmitting ? "..." : "Add Movie"}
+                      {isSubmitting ? "..." : "Submit Movie"}
                     </Button>
                     <Button
                       type="reset"
@@ -279,6 +289,12 @@ const AddMovie: React.FC = () => {
               />
             </div>
           </div>
+          {mutation.isError ? (
+            <div className="text-red-600">{mutation.error.message}</div>
+          ) : null}
+          {mutation.isSuccess ? (
+            <div className="text-green-600">Movie added successfully! 🎉</div>
+          ) : null}
         </form>
       </CardContent>
     </Card>

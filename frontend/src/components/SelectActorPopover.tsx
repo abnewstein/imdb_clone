@@ -1,6 +1,5 @@
-import * as React from "react";
+import React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,15 +16,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export default function SelectActors({
-  actors,
-  value,
-  onChange,
-}: {
+type SelectActorsPopoverProps = {
   actors: { value: string; label: string }[];
   value: string;
   onChange: (value: string) => void;
-}) {
+};
+
+const SelectActorsPopover: React.FC<SelectActorsPopoverProps> = ({
+  actors,
+  value,
+  onChange,
+}) => {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -73,4 +74,6 @@ export default function SelectActors({
       </PopoverContent>
     </Popover>
   );
-}
+};
+
+export default SelectActorsPopover;

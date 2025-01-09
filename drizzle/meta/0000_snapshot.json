@@ -1,5 +1,5 @@
 {
-  "id": "085ccac2-1c7a-424e-aa72-ee05d7366f18",
+  "id": "02601779-a9d0-4211-8c79-580307f09238",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -14,18 +14,18 @@
           "primaryKey": true,
           "notNull": true
         },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
         },
         "gender": {
           "name": "gender",
@@ -49,7 +49,17 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "actors_name_gender_date_of_birth_unique": {
+          "name": "actors_name_gender_date_of_birth_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name",
+            "gender",
+            "date_of_birth"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -131,18 +141,18 @@
           "primaryKey": true,
           "notNull": true
         },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
         },
         "year_of_release": {
           "name": "year_of_release",
@@ -186,7 +196,17 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "movies_name_year_of_release_producer_id_unique": {
+          "name": "movies_name_year_of_release_producer_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name",
+            "year_of_release",
+            "producer_id"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -201,18 +221,18 @@
           "primaryKey": true,
           "notNull": true
         },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
         },
         "gender": {
           "name": "gender",
@@ -236,7 +256,17 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "producers_name_gender_date_of_birth_unique": {
+          "name": "producers_name_gender_date_of_birth_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name",
+            "gender",
+            "date_of_birth"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

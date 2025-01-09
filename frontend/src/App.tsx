@@ -17,11 +17,21 @@ const App: React.FC = () => {
         </div>
         <div>
           <NavigationMenuList className="flex items-center gap-4 mb-4">
-            <NavigationMenuItem className="py-2 px-4 border-2 rounded-md border-gray-900">
-              <Link to="/">Movie List</Link>
+            <NavigationMenuItem>
+              <Link
+                to="/"
+                className="py-2 px-4 border-2 rounded-md border-gray-900"
+              >
+                Movie List
+              </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem className="py-2 px-4 border-2 rounded-md border-gray-900">
-              <Link to="/add-movie">Add Movie</Link>
+            <NavigationMenuItem>
+              <Link
+                to="/add-movie"
+                className="py-2 px-4 border-2 rounded-md border-gray-900"
+              >
+                Add Movie
+              </Link>
             </NavigationMenuItem>
           </NavigationMenuList>
         </div>

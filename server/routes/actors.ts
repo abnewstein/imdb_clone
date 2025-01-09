@@ -21,13 +21,18 @@ const routes = new Hono()
         .values({
           name,
           gender,
-          dateOfBirth,
+          dateOfBirth: dateOfBirth.toISOString(),
           bio,
         })
         .returning();
       return c.json(newActor, 201);
     } catch (error) {
-      return c.json({ error: "Failed to create a Producer" }, 500);
+      const code: string = error?.code ?? "";
+      // Unique constraint:
+      if (code === "23505") {
+        return c.json({ data: null, message: "Actor already exists" }, 409);
+      }
+      return c.json({ data: null, message: "Failed to add the actor" }, 500);
     }
   });
 

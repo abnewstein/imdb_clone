@@ -17,6 +17,9 @@ const routes = new Hono()
             columns: {
               id: true,
               name: true,
+              gender: true,
+              dateOfBirth: true,
+              bio: true,
             },
           },
           movieActors: {
@@ -25,6 +28,9 @@ const routes = new Hono()
                 columns: {
                   id: true,
                   name: true,
+                  gender: true,
+                  dateOfBirth: true,
+                  bio: true,
                 },
               },
             },
@@ -53,7 +59,7 @@ const routes = new Hono()
       c.req.valid("json");
 
     try {
-      await db.transaction(async (tx) => {
+      const newMovie = await db.transaction(async (tx) => {
         const [newMovie] = await tx
           .insert(movies)
           .values({
@@ -75,12 +81,16 @@ const routes = new Hono()
         );
 
         await tx.insert(movieActors).values(movieActorRelations);
+        return newMovie;
       });
-
-      return c.json({ message: "Movie created successfully" }, 201);
+      return c.json({ data: newMovie, message: "success" }, 201);
     } catch (error) {
-      console.error("Error creating movie:", error);
-      return c.json({ error: "Failed to create a movie" }, 500);
+      const code: string = error?.code ?? "";
+      // Unique constraint:
+      if (code === "23505") {
+        return c.json({ data: null, message: "Movie already exists" }, 409);
+      }
+      return c.json({ data: null, message: "Failed to create a Movie" }, 500);
     }
   });
 
