@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { createMovieSchema } from "@server/sharedTypes";
+import {
+  createMovieSchema,
+  createActorSchema,
+  createProducerSchema,
+} from "@server/sharedTypes";
 
 export const addMovieSchema = createMovieSchema.extend({
   yearOfRelease: z
@@ -21,4 +25,7 @@ export const addMovieSchema = createMovieSchema.extend({
     )
     .nonempty({ message: "At least one actor is required" }),
 });
+
 export type AddMoviePayload = z.infer<typeof addMovieSchema>;
+export type CreateActorPayload = z.infer<typeof createActorSchema>;
+export type CreateProducerPayload = z.infer<typeof createProducerSchema>;

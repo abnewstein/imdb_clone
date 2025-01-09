@@ -84,8 +84,8 @@ const routes = new Hono()
         return newMovie;
       });
       return c.json({ data: newMovie, message: "success" }, 201);
-    } catch (error) {
-      const code: string = error?.code ?? "";
+    } catch (error: any) {
+      const code: string = error["code"] ?? "";
       // Unique constraint:
       if (code === "23505") {
         return c.json({ data: null, message: "Movie already exists" }, 409);

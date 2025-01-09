@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { useForm } from "@tanstack/react-form";
-import type { FieldApi } from "@tanstack/react-form";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { SquareX } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,22 +14,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import FieldInfo from "./FieldInfo";
+import AddActorOrProducerDialog from "./AddActorOrProducerDialog";
 import SelectActorPopover from "./SelectActorPopover";
 import { fetchActorList, fetchProducerList } from "@/lib/fetchers";
 import { api } from "@/lib/api";
 import { type CreateMovie } from "@server/sharedTypes";
 import { type AddMoviePayload, addMovieSchema } from "@/lib/types";
-
-//eslint-disable-next-line
-function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
-  return (
-    <>
-      {field.state.meta.isTouched && field.state.meta.errors.length ? (
-        <em className="text-red-600">{field.state.meta.errors.join(",")}</em>
-      ) : null}
-    </>
-  );
-}
 
 const AddMovie: React.FC = () => {
   const { data: actorList } = useQuery({
@@ -296,6 +286,11 @@ const AddMovie: React.FC = () => {
             <div className="text-green-600">Movie added successfully! 🎉</div>
           ) : null}
         </form>
+        <p className="text-sm text-gray-500 my-4">
+          Don't see the actor or producer you're looking for? <br />
+          Add them here!
+        </p>
+        <AddActorOrProducerDialog />
       </CardContent>
     </Card>
   );

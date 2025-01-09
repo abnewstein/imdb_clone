@@ -21,13 +21,13 @@ const routes = new Hono()
         .values({
           name,
           gender,
-          dateOfBirth: dateOfBirth.toISOString(),
+          dateOfBirth,
           bio,
         })
         .returning();
-      return c.json(newProducer, 201);
-    } catch (error) {
-      const code: string = error?.code ?? "";
+      return c.json({ data: newProducer, message: "Success" }, 201);
+    } catch (error: any) {
+      const code: string = error["code"] ?? "";
       // Unique constraint:
       if (code === "23505") {
         return c.json({ data: null, message: "Producer already exists" }, 409);
