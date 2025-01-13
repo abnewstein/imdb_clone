@@ -5,6 +5,7 @@ import {
   Route,
   NavLink,
 } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
 import MovieListPage from "./pages/MovieListPage";
 import AddMoviePage from "./pages/AddMoviePage";
 import {
@@ -50,7 +51,8 @@ const App: React.FC = () => {
         </div>
       </NavigationMenu>
       <Routes>
-        <Route path="/" element={<MovieListPage />} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/movie-list" element={<MovieListPage />} />
         <Route path="/add-movie" element={<AddMoviePage />} />
       </Routes>
     </Router>

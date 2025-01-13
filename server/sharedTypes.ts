@@ -1,8 +1,19 @@
 import { createSelectSchema, createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { actors, producers, movies, movieActors } from "./db/schema";
+import { users, actors, producers, movies, movieActors } from "./db/schema";
 
 export type Gender = "male" | "female" | "other";
+
+export const insertUsersSchema = createInsertSchema(users, {
+  username: z
+    .string()
+    .min(4, { message: "username must at least be 4 character" })
+    .max(100, { message: "username must be at most 100 characters" }),
+  password: z
+    .string()
+    .min(6, { message: "password must at least be 6 character" })
+    .max(20, { message: "username must be at most 20 characters" }),
+});
 
 export const insertActorSchema = createInsertSchema(actors, {
   name: z
@@ -65,6 +76,10 @@ export const selectMovieSchema = createSelectSchema(movies);
 export const insertMovieActorSchema = createInsertSchema(movieActors);
 export const selectMovieActorSchema = createSelectSchema(movieActors);
 
+export const createUserSchema = insertUsersSchema.omit({
+  id: true,
+  createdAt: true,
+});
 export const actorSchema = selectActorSchema.omit({ createdAt: true });
 export const createActorSchema = insertActorSchema.omit({
   id: true,

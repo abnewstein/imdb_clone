@@ -16,6 +16,12 @@ const commonFields = {
   createdAt: timestamp("created_at").defaultNow(),
 };
 
+export const users = pgTable("users", {
+  ...commonFields,
+  username: varchar("username", { length: 255 }).notNull().unique(),
+  password: text("password").notNull(),
+});
+
 export const actors = pgTable(
   "actors",
   {

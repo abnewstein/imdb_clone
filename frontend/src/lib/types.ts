@@ -3,6 +3,7 @@ import {
   createMovieSchema,
   createActorSchema,
   createProducerSchema,
+  createUserSchema,
 } from "@server/sharedTypes";
 
 export const addMovieSchema = createMovieSchema.extend({
@@ -29,3 +30,4 @@ export const addMovieSchema = createMovieSchema.extend({
 export type AddMoviePayload = z.infer<typeof addMovieSchema>;
 export type CreateActorPayload = z.infer<typeof createActorSchema>;
 export type CreateProducerPayload = z.infer<typeof createProducerSchema>;
+export type AddUserPayload = z.infer<typeof createUserSchema>;
