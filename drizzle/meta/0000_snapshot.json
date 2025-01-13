@@ -1,5 +1,5 @@
 {
-  "id": "02601779-a9d0-4211-8c79-580307f09238",
+  "id": "56c3533f-fe01-43df-9d62-37659c345b7a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -162,12 +162,6 @@
         },
         "plot": {
           "name": "plot",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "poster": {
-          "name": "poster",
           "type": "text",
           "primaryKey": false,
           "notNull": false

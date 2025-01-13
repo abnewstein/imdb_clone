@@ -47,7 +47,6 @@ export const movies = pgTable(
     name: varchar("name", { length: 255 }).notNull(),
     yearOfRelease: integer("year_of_release").notNull(),
     plot: text("plot"),
-    poster: text("poster"),
     producerId: integer("producer_id")
       .references(() => producers.id)
       .notNull(),

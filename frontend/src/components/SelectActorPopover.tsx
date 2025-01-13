@@ -19,12 +19,14 @@ import {
 type SelectActorsPopoverProps = {
   actors: { value: string; label: string }[];
   value: string;
+  defaultValue: string;
   onChange: (value: string) => void;
 };
 
 const SelectActorsPopover: React.FC<SelectActorsPopoverProps> = ({
   actors,
   value,
+  defaultValue,
   onChange,
 }) => {
   const [open, setOpen] = React.useState(false);
@@ -39,7 +41,9 @@ const SelectActorsPopover: React.FC<SelectActorsPopoverProps> = ({
           className="w-[200px] justify-between"
         >
           {value
-            ? actors.find((actor) => actor.value === value)?.label
+            ? actors.find(
+                (actor) => actor.value === value || actor.value === defaultValue
+              )?.label
             : "Select actor..."}
           <ChevronsUpDown className="opacity-50" />
         </Button>

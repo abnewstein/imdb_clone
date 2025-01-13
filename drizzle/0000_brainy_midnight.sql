@@ -21,7 +21,6 @@ CREATE TABLE "movies" (
 	"name" varchar(255) NOT NULL,
 	"year_of_release" integer NOT NULL,
 	"plot" text,
-	"poster" text,
 	"producer_id" integer NOT NULL,
 	CONSTRAINT "movies_name_year_of_release_producer_id_unique" UNIQUE("name","year_of_release","producer_id")
 );

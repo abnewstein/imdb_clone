@@ -1,7 +1,12 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import MovieList from "./components/MovieList";
-import AddMovie from "./components/AddMovie";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  NavLink,
+} from "react-router-dom";
+import MovieListPage from "./pages/MovieListPage";
+import AddMoviePage from "./pages/AddMoviePage";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -13,32 +18,40 @@ const App: React.FC = () => {
     <Router>
       <NavigationMenu className="m-auto flex flex-col justify-between items-center p-4 gap-4">
         <div>
-          <h1 className="text-3xl ">IMDB Clone</h1>
+          <h1 className="text-3xl">IMDB Clone</h1>
         </div>
         <div>
           <NavigationMenuList className="flex items-center gap-4 mb-4">
             <NavigationMenuItem>
-              <Link
+              <NavLink
                 to="/"
-                className="py-2 px-4 border-2 rounded-md border-gray-900"
+                className={({ isActive }) =>
+                  isActive
+                    ? "py-2 px-4 border-2 rounded-md border-violet-700 bg-violet-700 text-white"
+                    : "py-2 px-4 border-2 rounded-md border-violet-700"
+                }
               >
                 Movie List
-              </Link>
+              </NavLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link
+              <NavLink
                 to="/add-movie"
-                className="py-2 px-4 border-2 rounded-md border-gray-900"
+                className={({ isActive }) =>
+                  isActive
+                    ? "py-2 px-4 border-2 rounded-md border-violet-700 bg-violet-700 text-white"
+                    : "py-2 px-4 border-2 rounded-md border-violet-700"
+                }
               >
                 Add Movie
-              </Link>
+              </NavLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </div>
       </NavigationMenu>
       <Routes>
-        <Route path="/" element={<MovieList />} />
-        <Route path="/add-movie" element={<AddMovie />} />
+        <Route path="/" element={<MovieListPage />} />
+        <Route path="/add-movie" element={<AddMoviePage />} />
       </Routes>
     </Router>
   );

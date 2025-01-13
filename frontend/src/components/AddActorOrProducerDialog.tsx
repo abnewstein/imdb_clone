@@ -127,7 +127,6 @@ const AddActorOrProducerDialog: React.FC = () => {
                         id={field.name}
                         name={field.name}
                         value={field.state.value ?? ""}
-                        onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
                         className="col-span-3"
                       />
@@ -190,7 +189,6 @@ const AddActorOrProducerDialog: React.FC = () => {
                         id={field.name}
                         name={field.name}
                         value={field.state.value}
-                        onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
                         className="col-span-3"
                       />
@@ -216,7 +214,6 @@ const AddActorOrProducerDialog: React.FC = () => {
                         id={field.name}
                         name={field.name}
                         value={field.state.value ?? ""}
-                        onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
                         className="col-span-3"
                       />

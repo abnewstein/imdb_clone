@@ -58,7 +58,6 @@ export const insertMovieSchema = createInsertSchema(movies, {
     .string()
     .max(3000, { message: "Plot must be less than 3000 characters" })
     .optional(),
-  poster: z.string().optional(),
   producerId: z.number().positive(),
 });
 export const selectMovieSchema = createSelectSchema(movies);
