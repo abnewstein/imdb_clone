@@ -139,4 +139,9 @@ Form validations are implemented to ensure data integrity and provide a better u
 
 These validations are enforced both on the client side (frontend) and the server side (backend) to prevent invalid data submissions.
 
-##
+## Screenshots
+
+![MovieList](https://github.com/user-attachments/assets/8a9d8208-afbe-41b4-aed4-5585bab9340c)
+![AddMovie](https://github.com/user-attachments/assets/75b851e9-8eda-4663-85be-926153d5fe5a)
+![AddActor](https://github.com/user-attachments/assets/8e2107e9-5e0a-4e3e-954a-a801dd8b3c58)
+
